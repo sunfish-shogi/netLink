@@ -15,11 +15,14 @@
 
 #include "MsgPack.h"
 
-#ifdef WIN32
-#define __builtin_bswap16 _byteswap_ushort
-#define __builtin_bswap32 _byteswap_ulong
-#define __builtin_bswap64 _byteswap_uint64
-#endif
+template <class T>
+static T change_endian(T in) {
+	T out;
+	for (unsigned i = 0; i < sizeof(T); i++) {
+		((char*)&out)[i] = ((char*)&in)[sizeof(T)-i-1];
+	}
+	return out;
+}
 
 void storeUint8(uint8_t* target, uint8_t source) {
     *reinterpret_cast<uint8_t*>(target) = source;
@@ -30,66 +33,66 @@ void storeInt8(uint8_t* target, int8_t source) {
 }
 
 void storeUint16(uint8_t* target, uint16_t source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     *reinterpret_cast<uint16_t*>(target) = source;
     #else
-    *reinterpret_cast<uint16_t*>(target) = __builtin_bswap16(source);
+    *reinterpret_cast<uint16_t*>(target) = change_endian(source);
     #endif
 }
 
 void storeInt16(uint8_t* target, int16_t source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     *reinterpret_cast<int16_t*>(target) = source;
     #else
-    *reinterpret_cast<int16_t*>(target) = __builtin_bswap16(source);
+    *reinterpret_cast<int16_t*>(target) = change_endian(source);
     #endif
 }
 
 void storeFloat32(uint8_t* target, float source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     *reinterpret_cast<float*>(target) = source;
     #else
-    *reinterpret_cast<float*>(target) = __builtin_bswap32(source);
+    *reinterpret_cast<float*>(target) = change_endian(source);
     #endif
 }
 
 void storeUint32(uint8_t* target, uint32_t source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     *reinterpret_cast<uint32_t*>(target) = source;
     #else
-    *reinterpret_cast<uint32_t*>(target) = __builtin_bswap32(source);
+    *reinterpret_cast<uint32_t*>(target) = change_endian(source);
     #endif
 }
 
 void storeInt32(uint8_t* target, int32_t source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     *reinterpret_cast<int32_t*>(target) = source;
     #else
-    *reinterpret_cast<int32_t*>(target) = __builtin_bswap32(source);
+    *reinterpret_cast<int32_t*>(target) = change_endian(source);
     #endif
 }
 
 void storeFloat64(uint8_t* target, double source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     *reinterpret_cast<double*>(target) = source;
     #else
-    *reinterpret_cast<double*>(target) = __builtin_bswap64(source);
+    *reinterpret_cast<double*>(target) = change_endian(source);
     #endif
 }
 
 void storeUint64(uint8_t* target, uint64_t source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     *reinterpret_cast<uint64_t*>(target) = source;
     #else
-    *reinterpret_cast<uint64_t*>(target) = __builtin_bswap64(source);
+    *reinterpret_cast<uint64_t*>(target) = change_endian(source);
     #endif
 }
 
 void storeInt64(uint8_t* target, int64_t source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     *reinterpret_cast<int64_t*>(target) = source;
     #else
-    *reinterpret_cast<int64_t*>(target) = __builtin_bswap64(source);
+    *reinterpret_cast<int64_t*>(target) = change_endian(source);
     #endif
 }
 
@@ -104,66 +107,66 @@ int8_t loadInt8(const uint8_t* source) {
 }
 
 uint16_t loadUint16(const uint8_t* source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     return *reinterpret_cast<const uint8_t*>(source);
     #else
-    return __builtin_bswap16(*reinterpret_cast<const uint8_t*>(source));
+    return change_endian(*reinterpret_cast<const uint16_t*>(source));
     #endif
 }
 
 int16_t loadInt16(const uint8_t* source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     return *reinterpret_cast<const int16_t*>(source);
     #else
-    return __builtin_bswap16(*reinterpret_cast<const int16_t*>(source));
+    return change_endian(*reinterpret_cast<const int16_t*>(source));
     #endif
 }
 
 float loadFloat32(const uint8_t* source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     return *reinterpret_cast<const float*>(source);
     #else
-    return __builtin_bswap32(*reinterpret_cast<const float*>(source));
+    return change_endian(*reinterpret_cast<const float*>(source));
     #endif
 }
 
 uint32_t loadUint32(const uint8_t* source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     return *reinterpret_cast<const uint32_t*>(source);
     #else
-    return __builtin_bswap32(*reinterpret_cast<const uint32_t*>(source));
+    return change_endian(*reinterpret_cast<const uint32_t*>(source));
     #endif
 }
 
 int32_t loadInt32(const uint8_t* source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     return *reinterpret_cast<const int32_t*>(source);
     #else
-    return __builtin_bswap32(*reinterpret_cast<const int32_t*>(source));
+    return change_endian(*reinterpret_cast<const int32_t*>(source));
     #endif
 }
 
 double loadFloat64(const uint8_t* source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     return *reinterpret_cast<const double*>(source);
     #else
-    return __builtin_bswap64(*reinterpret_cast<const double*>(source));
+    return change_endian(*reinterpret_cast<const double*>(source));
     #endif
 }
 
 uint64_t loadUint64(const uint8_t* source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     return *reinterpret_cast<const uint64_t*>(source);
     #else
-    return __builtin_bswap64(*reinterpret_cast<const uint64_t*>(source));
+    return change_endian(*reinterpret_cast<const uint64_t*>(source));
     #endif
 }
 
 int64_t loadInt64(const uint8_t* source) {
-    #if BIG_ENDIAN
+    #if IS_BIG_ENDIAN
     return *reinterpret_cast<const int64_t*>(source);
     #else
-    return __builtin_bswap64(*reinterpret_cast<const int64_t*>(source));
+    return change_endian(*reinterpret_cast<const int64_t*>(source));
     #endif
 }
 
@@ -466,11 +469,13 @@ namespace MsgPack {
             memcpy(data.get(), &*str.begin(), len);
         }
 
-        if(len < 0x20)
+        if(len < 0x20) {
             header[0] = Type::FIXSTR+len;
-        else if(len <= 0xFF) {
+#if MSGPACK_V5
+        }else if(len <= 0xFF) {
             header[0] = Type::STR_8;
             storeUint8(&header[1], len);
+#endif
         }else if(len <= 0xFFFF) {
             header[0] = Type::STR_16;
             storeUint16(&header[1], len);
